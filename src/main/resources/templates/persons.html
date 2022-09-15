@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Persons</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://igoradamenko.github.io/awsm.css/css/awsm_theme_mischka.css">
+</head>
+
+<body>
+<main>
+<h2>List of persons</h2>
+
+<table>
+    <!--/*@thymesVar id="persons" type="com.example.FamilyCalendar.model.projection.PersonReadModel"*/-->
+    <tr>
+        <th>Name</th>
+        <th>Surname</th>
+        <th>Occasions</th>
+    </tr>
+
+    <tr th:each="person : ${persons}">
+        <td th:text="${person.name}"></td>
+        <td th:text="${person.surname}"></td>
+        <td>
+            <p th:each="occasion : ${person.occasions}">
+                <span th:text="${occasion.description}"></span>
+            </p>
+        </td>
+    </tr>
+</table>
+
+<!--/*@thymesVar id="persons" type="com.example.FamilyCalendar.model.projection.PersonReadModel"*/-->
+<dl th:each="person : ${persons}">
+    <dd>
+        <ul>
+            <li th:each="occasion : ${person.occasions}" th:text="${occasion.description}">asd</li>
+        </ul>
+    </dd>
+
+</dl>
+
+</main>
+</body>
+</html>

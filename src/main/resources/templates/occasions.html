@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Occasions</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://igoradamenko.github.io/awsm.css/css/awsm_theme_mischka.css">
+</head>
+
+<body>
+ <main>
+   <h2>List of occasions</h2>
+
+     <table>
+        <tr>
+          <th>Id</th>
+          <th>Description</th>
+          <th>Date</th>
+       </tr>
+
+       <tr th:each="occasion : ${occasions}">
+            <td th:text="${occasion.id}">Id</td>
+            <td th:text="${occasion.description}">Description</td>
+            <td th:text="${#temporals.format(occasion.date, 'd MMM')}">Date</td>
+       </tr>
+ </table>
+
+     <br>
+     <br>
+
+     <fieldset>
+         <legend>Nowa okazja</legend>
+     <!--/*@thymesVar id="occasion" type="com.example.FamilyCalendar.model.projection.ProjectWriteModel"*/-->
+         <!--/*@thymesVar id="person" type="com.example.FamilyCalendar.model.projection.PersonWriteModel"*/-->
+         <form action="#" method="post" th:action="@{/occasions}" th:object="${occasion}">
+
+             <fieldset th:field="${occasion.person}">
+
+             <label>
+                 Imię osoby
+                 <input type="text" th:field="${person.name}"/>
+             </label>
+             <label>
+                 Nazwisko osoby
+                 <input type="text" th:field="${person.surname}"/>
+             </label>
+                 <button type="submit" name="addPerson">+</button>
+
+             </fieldset>
+
+             <label> Opis
+                 <input type="text" th:field="${occasion.description}"/>
+             </label>
+             <label> Data
+                 <input type="date" th:field="${occasion.date}"/>
+             </label>
+
+             <p>
+             <button type="submit">Dodaj</button>
+             <button type="reset">Wyczyść</button>
+             </p>
+         </form>
+     </fieldset>
+</main>
+
+
+</body>
+</html>
