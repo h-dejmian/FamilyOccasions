@@ -3,8 +3,6 @@ package com.example.FamilyCalendar.controller;
 import com.example.FamilyCalendar.model.Occasion;
 import com.example.FamilyCalendar.model.OccasionRepository;
 import com.example.FamilyCalendar.model.Person;
-import com.example.FamilyCalendar.model.projection.OccasionReadModel;
-import com.example.FamilyCalendar.model.projection.OccasionWriteModel;
 import com.example.FamilyCalendar.service.OccasionService;
 import com.example.FamilyCalendar.service.PersonService;
 import org.slf4j.Logger;
@@ -20,6 +18,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
@@ -36,10 +35,10 @@ public class OccasionController {
         this.repository = repository;
     }
 
- /*   @GetMapping(params = {"!sort", "!page", "!size"})
+  /*  @GetMapping(params = {"!sort", "!page", "!size"})
     ResponseEntity<List<Occasion>> readAllOccasions() {
         logger.warn("All data exposed!");
-        return ResponseEntity.ok(repository.findAll());
+        return ResponseEntity.ok(occasionService.readAll());
     } */
 
     @GetMapping(value = "/{id}")
@@ -49,47 +48,44 @@ public class OccasionController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-     @GetMapping
+
+     @GetMapping(produces = MediaType.TEXT_HTML_VALUE)
      String showOccasions(Model model) {
-        //  model.addAttribute("occasion", new OccasionWriteModel());
-        DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd-MM");
-        var occasions = (List<Occasion>) repository.findAll().stream()
-                .filter(occasion -> occasion.getDate() != null)
-                .peek(occasion -> occasion.getDate().format(pattern))
-                        .collect(Collectors.toList());
-
-        model.addAttribute("occasions", occasions);
-        model.addAttribute("occasion", new OccasionWriteModel());
-        return "occasions";
-    }
-
-     @PostMapping
-     String addOccasion(@ModelAttribute("occasion") @Valid OccasionWriteModel current,
-                        BindingResult bindingResult,
-                        Model model){
-         if(bindingResult.hasErrors()) {
-             return "occasions";
-         }
-         occasionService.save(current);
-         model.addAttribute("occasion", new OccasionWriteModel());
-         model.addAttribute("occasions", getOccasions());
-         model.addAttribute("message", "Dodano okazję!");
+         var occasions = (List<Occasion>) repository.findAll();
+         model.addAttribute("occasions", occasions);
+         model.addAttribute("occasion", new Occasion());
          return "occasions";
-     }
+    }
 
-    @PostMapping(params = "addPerson")
-    public String addPerson(@ModelAttribute("occasion") OccasionWriteModel current,
-                            @RequestBody @Valid Person person) {
-        current.setPerson(person);
+    @PostMapping(produces = MediaType.TEXT_HTML_VALUE, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    String addOccasion(@ModelAttribute("occasion") @RequestBody @Valid Occasion current,
+                       BindingResult bindingResult,
+                       Model model){
+        if(bindingResult.hasErrors()) {
+            return "occasions";
+        }
+
+        Person person = current.getPerson();
+
+        if(personService.existsByNameAndSurname(person.getName(), person.getSurname())) {
+            current.setPerson(personService.findByNameAndSurname(person.getName(), person.getSurname()));
+            occasionService.save(current);
+        }
+
+        else occasionService.save(current);
+
+        model.addAttribute("occasions", getOccasions());
+        model.addAttribute("message", "Dodano okazję!");
+
         return "occasions";
     }
 
-  /*  @PostMapping(consumes = {MediaType.APPLICATION_FORM_URLENCODED_VALUE,MediaType.APPLICATION_JSON_VALUE},
-            produces = {MediaType.APPLICATION_JSON_VALUE})
-    ResponseEntity<Occasion> createOccasion( @Valid Occasion occasion) {
+    @ResponseBody
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<Occasion> createOccasion( @RequestBody @Valid Occasion occasion) {
         Occasion occ = repository.save(occasion);
         return ResponseEntity.created(URI.create("/" + occ.getId())).body(occ);
-    } */
+    }
 
     @PutMapping("/{id}")
     ResponseEntity<?> updateOccasion(@PathVariable int id, @RequestBody @Valid Occasion occasion ) {

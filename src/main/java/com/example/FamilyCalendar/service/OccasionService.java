@@ -2,9 +2,9 @@ package com.example.FamilyCalendar.service;
 
 import com.example.FamilyCalendar.model.Occasion;
 import com.example.FamilyCalendar.model.OccasionRepository;
-import com.example.FamilyCalendar.model.projection.OccasionWriteModel;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,7 +17,7 @@ public class OccasionService {
     }
 
     public List<Occasion> readAll() {
-        return repository.findAll();
+        return new ArrayList<>(repository.findAll());
     }
 
     public Optional<Occasion> findById(Integer id) {
@@ -28,8 +28,8 @@ public class OccasionService {
         return repository.existsById(id);
     }
 
-    public Occasion save(OccasionWriteModel entity) {
-        return repository.save(entity.toOccasion());
+    public Occasion save(Occasion entity) {
+        return repository.save(entity);
     }
 
     public void deleteById(Integer id) {

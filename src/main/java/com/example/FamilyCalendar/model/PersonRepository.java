@@ -20,4 +20,8 @@ public interface PersonRepository extends JpaRepository<Person, Integer> {
     Page<Person> findAll(Pageable page);
 
     void deleteById(Integer id);
+
+    boolean existsByNameAndSurname(String name, String surname);
+
+    Person findByNameAndSurname(String name, String surname);
 }

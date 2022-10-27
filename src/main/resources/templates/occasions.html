@@ -8,8 +8,10 @@
 </head>
 
 <body>
- <main>
+<main>
    <h2>List of occasions</h2>
+    <div th:inline="text">Today is: [[${#dates.format(#dates.createNow(),'YYYY/MM/dd')}]]</div>
+    <br/>
 
      <table>
         <tr>
@@ -18,51 +20,43 @@
           <th>Date</th>
        </tr>
 
-       <tr th:each="occasion : ${occasions}">
-            <td th:text="${occasion.id}">Id</td>
+       <tr th:each="occasion, occasionStat : ${occasions}">
+            <td th:text="${occasionStat.index + 1}">Id</td>
             <td th:text="${occasion.description}">Description</td>
             <td th:text="${#temporals.format(occasion.date, 'd MMM')}">Date</td>
        </tr>
- </table>
+    </table>
 
-     <br>
-     <br>
+     <br/>
+     <br/>
 
      <fieldset>
-         <legend>Nowa okazja</legend>
-     <!--/*@thymesVar id="occasion" type="com.example.FamilyCalendar.model.projection.ProjectWriteModel"*/-->
-         <!--/*@thymesVar id="person" type="com.example.FamilyCalendar.model.projection.PersonWriteModel"*/-->
+         <legend>New Occasion</legend>
+         <!--/*@thymesVar id="occasion" type="com.example.FamilyCalendar.model.Occasion"*/-->
          <form action="#" method="post" th:action="@{/occasions}" th:object="${occasion}">
+             <p th:if="${#fields.hasAnyErrors()}" th:errors="*{all}"></p>
 
-             <fieldset th:field="${occasion.person}">
-
-             <label>
-                 Imię osoby
-                 <input type="text" th:field="${person.name}"/>
-             </label>
-             <label>
-                 Nazwisko osoby
-                 <input type="text" th:field="${person.surname}"/>
-             </label>
-                 <button type="submit" name="addPerson">+</button>
-
-             </fieldset>
-
-             <label> Opis
+             <label> Description
                  <input type="text" th:field="${occasion.description}"/>
              </label>
-             <label> Data
-                 <input type="date" th:field="${occasion.date}"/>
+             <label> Date
+                 <input type="date" th:field="${occasion.date}" />
+             </label>
+             <label> Name
+                 <input type="text" th:field="${occasion.person.name}" />
+             </label>
+             <label> Surname
+                 <input type="text" th:field="${occasion.person.surname}" />
              </label>
 
              <p>
-             <button type="submit">Dodaj</button>
-             <button type="reset">Wyczyść</button>
+                 <button type="submit">Add</button>
+                 <button type="reset">Clear</button>
              </p>
-         </form>
-     </fieldset>
+            </form>
+        </fieldset>
+    <br/>
+    <a href="index.html">Back</a>
 </main>
-
-
 </body>
 </html>

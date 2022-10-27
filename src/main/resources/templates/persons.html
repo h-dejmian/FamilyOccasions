@@ -9,36 +9,34 @@
 
 <body>
 <main>
-<h2>List of persons</h2>
+    <h2>List of persons</h2>
 
-<table>
-    <!--/*@thymesVar id="persons" type="com.example.FamilyCalendar.model.projection.PersonReadModel"*/-->
-    <tr>
-        <th>Name</th>
-        <th>Surname</th>
-        <th>Occasions</th>
-    </tr>
+        <div th:inline="text">Today is: [[${#dates.format(#dates.createNow(),'YYYY/MM/dd')}]]</div>
+        <br/>
 
-    <tr th:each="person : ${persons}">
-        <td th:text="${person.name}"></td>
-        <td th:text="${person.surname}"></td>
-        <td>
-            <p th:each="occasion : ${person.occasions}">
-                <span th:text="${occasion.description}"></span>
-            </p>
-        </td>
-    </tr>
-</table>
+        <table>
+            <!--/*@thymesVar id="persons" type="com.example.FamilyCalendar.model.Person"*/-->
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Occasions</th>
+            </tr>
 
-<!--/*@thymesVar id="persons" type="com.example.FamilyCalendar.model.projection.PersonReadModel"*/-->
-<dl th:each="person : ${persons}">
-    <dd>
-        <ul>
-            <li th:each="occasion : ${person.occasions}" th:text="${occasion.description}">asd</li>
-        </ul>
-    </dd>
+            <tr th:each="person, personStats : ${persons}">
+                <td th:text="${personStats.index + 1}"></td>
+                <td th:text="${person.name}"></td>
+                <td th:text="${person.surname}"></td>
+                <td>
+                    <p th:each="occasion : ${person.occasions}">
+                        <span th:text="${occasion.description}"></span>
+                    </p>
+                </td>
+            </tr>
+        </table>
 
-</dl>
+        <br/><br/>
+        <a href="index.html">Back</a>
 
 </main>
 </body>

@@ -25,14 +25,12 @@ public class Occasion {
     @JoinColumn(name = "person_id")
     private Person person;
 
-    Occasion() {}
+    public Occasion() {}
 
     public Occasion(String description, LocalDate date, Person person) {
         this.description = description;
         this.date = date;
         this.person = person;
-
-       // person.getOccasions().add(this);
     }
 
     public int getId() {
