@@ -30,6 +30,8 @@
                 <td>
                     <p th:each="occasion : ${person.occasions}">
                         <span th:text="${occasion.description}"></span>
+                        ||
+                        <span th:text="${occasion.date}"></span>
                     </p>
                 </td>
             </tr>

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -51,7 +52,8 @@ public class OccasionController {
 
      @GetMapping(produces = MediaType.TEXT_HTML_VALUE)
      String showOccasions(Model model) {
-         var occasions = (List<Occasion>) repository.findAll();
+         var occasions = (List<Occasion>) repository.findAll().stream().sorted((o1, o2) -> o1.getDate().compareTo(o2.getDate())).collect(Collectors.toList());
+
          model.addAttribute("occasions", occasions);
          model.addAttribute("occasion", new Occasion());
          return "occasions";
